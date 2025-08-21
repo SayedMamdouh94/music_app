@@ -1,0 +1,47 @@
+name: music_media
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  animated_bottom_navigation_bar: ^1.4.0
+  cached_network_image: ^3.4.1
+  curved_navigation_bar: ^1.0.6
+
+  flutter_bloc: ^9.1.1
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  http: ^1.4.0
+
+  just_audio: ^0.9.46
+  palette_generator: ^0.3.3+7
+  shimmer: ^3.0.0
+  smooth_page_indicator: ^1.2.1
+  path_provider: ^2.1.5
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  hive_generator:
+  build_runner:
+
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/introduction/
+    - assets/icons/
+
+  fonts:
+    - family: Italianno-Regular
+      fonts:
+        - asset: assets/fonts/Italianno-Regular.ttf
+
+
