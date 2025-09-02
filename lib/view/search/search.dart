@@ -18,9 +18,7 @@ class _SearchState extends State<Search> {
   void onSearch() {
     final query = controller.text.trim();
     if (query.isNotEmpty) {
-      context
-          .read<SearchingBloc>()
-          .add(SearchQueryEvent(query: query, type: selectedType));
+      context.read<SearchingCubit>().search(query: query, type: selectedType);
     }
   }
 
@@ -33,7 +31,7 @@ class _SearchState extends State<Search> {
     return Scaffold(
       appBar:
           SearchWidgets.appBar(controller, selectedType, onSearch, onChange),
-      body: BlocBuilder<SearchingBloc, SearchingState>(
+      body: BlocBuilder<SearchingCubit, SearchingState>(
         builder: (context, state) {
           if (state is SearchingLoading) {
             return const Center(child: CircularProgressIndicator());

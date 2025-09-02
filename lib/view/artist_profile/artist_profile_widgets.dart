@@ -29,7 +29,7 @@ class ArtistProfileWidgets {
                 )),
             BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Container(color: Colors.black.withOpacity(0.1)),
+              child: Container(color: Colors.black.withValues(alpha: 0.1)),
             ),
             Align(
               alignment: Alignment.center,

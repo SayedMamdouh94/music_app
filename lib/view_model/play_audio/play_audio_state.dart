@@ -1,25 +1,32 @@
 part of 'play_audio_bloc.dart';
 
-@immutable
-sealed class PlayAudioState {}
+sealed class PlayAudioState {
+  const PlayAudioState();
+}
 
-class PlayAudioInitial extends PlayAudioState {}
+final class PlayAudioInitial extends PlayAudioState {
+  const PlayAudioInitial();
+}
 
-class LoadingPlayAudioState extends PlayAudioState {}
+final class LoadingPlayAudioState extends PlayAudioState {
+  const LoadingPlayAudioState();
+}
 
-class LoadedAudioState extends PlayAudioState {
+final class LoadedAudioState extends PlayAudioState {
   final Color dominantColor;
   final bool isPlaying;
   final bool isRepeating;
   final Duration duration;
   final Duration position;
-  LoadedAudioState({
+
+  const LoadedAudioState({
     required this.dominantColor,
     required this.isPlaying,
     required this.isRepeating,
     required this.duration,
     required this.position,
   });
+
   LoadedAudioState copyWith({
     Color? dominantColor,
     bool? isPlaying,
@@ -35,6 +42,27 @@ class LoadedAudioState extends PlayAudioState {
       position: position ?? this.position,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is LoadedAudioState &&
+          other.dominantColor == dominantColor &&
+          other.isPlaying == isPlaying &&
+          other.isRepeating == isRepeating &&
+          other.duration == duration &&
+          other.position == position;
+
+  @override
+  int get hashCode => Object.hash(
+        dominantColor,
+        isPlaying,
+        isRepeating,
+        duration,
+        position,
+      );
 }
 
-class ErrorAudioState extends PlayAudioState {}
+final class ErrorAudioState extends PlayAudioState {
+  const ErrorAudioState();
+}

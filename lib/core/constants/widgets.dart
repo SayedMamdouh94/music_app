@@ -47,7 +47,7 @@ class Widgets {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => BlocProvider(
-                  create: (_) => PlayAudioBloc(),
+                  create: (_) => PlayAudioCubit(),
                   child: PlayAudio(
                     track: track,
                   ),
@@ -66,7 +66,7 @@ class Widgets {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => BlocProvider(
-              create: (_) => TracksBloc(),
+              create: (_) => TracksCubit(),
               child: ArtistProfile(artist: artist),
             ),
           ),
@@ -96,7 +96,7 @@ class Widgets {
         Navigator.of(context).push(
           MaterialPageRoute(
               builder: (context) => BlocProvider(
-                    create: (_) => TracksBloc(),
+                    create: (_) => TracksCubit(),
                     child: TracksPage(item: playlist, type: 'playlist'),
                   )),
         );
@@ -118,7 +118,7 @@ class Widgets {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => BlocProvider(
-              create: (_) => TracksBloc(),
+              create: (_) => TracksCubit(),
               child: TracksPage(
                 item: album,
                 type: 'album',
@@ -133,7 +133,7 @@ class Widgets {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: ConstColors.cream.withOpacity(0.15),
+              color: ConstColors.cream.withValues(alpha: 0.15),
               blurRadius: 6,
               offset: const Offset(0, 5),
             ),

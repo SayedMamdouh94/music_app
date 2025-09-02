@@ -1,12 +1,21 @@
 part of 'tracks_bloc.dart';
 
-@immutable
-sealed class TracksState {}
+sealed class TracksState {
+  const TracksState();
+}
 
-final class TracksInitial extends TracksState {}
+final class TracksInitial extends TracksState {
+  const TracksInitial();
+}
 
-final class TracksLoading extends TracksState {}
+final class TracksLoading extends TracksState {
+  const TracksLoading();
+}
 
-final class TracksLoaded extends TracksState {}
+final class TracksLoaded extends TracksState {
+  const TracksLoaded();
+}
 
-final class TracksError extends TracksState {}
+final class TracksError extends TracksState {
+  const TracksError();
+}

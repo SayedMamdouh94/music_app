@@ -1,31 +1,31 @@
-import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/service/service.dart';
 
-part 'searching_event.dart';
 part 'searching_state.dart';
 
-class SearchingBloc extends Bloc<SearchingEvent, SearchingState> {
-  SearchingBloc() : super(SearchingInitial()) {
-    on<SearchQueryEvent>(
-      (event, emit) async {
-        emit(SearchingLoading());
-        try {
-          final result = await Service().searching(event.query, event.type);
+class SearchingCubit extends Cubit<SearchingState> {
+  SearchingCubit() : super(const SearchingInitial());
 
-          emit(
-            SearchingLoaded(
-              tracks: event.type == 'song' ? result : [],
-              artists: event.type == 'artist' ? result : [],
-              albums: event.type == 'album' ? result : [],
-              playlists: event.type == 'playlist' ? result : [],
-            ),
-          );
-        } catch (e) {
-          emit(SearchingError());
-        }
-      },
-    );
+  Future<void> search({required String query, required String type}) async {
+    emit(const SearchingLoading());
+    try {
+      final result = await Service().searching(query, type);
+
+      emit(
+        SearchingLoaded(
+          tracks: type == 'song' ? result : [],
+          artists: type == 'artist' ? result : [],
+          albums: type == 'album' ? result : [],
+          playlists: type == 'playlist' ? result : [],
+        ),
+      );
+    } catch (e) {
+      emit(const SearchingError());
+    }
+  }
+
+  void clearResults() {
+    emit(const SearchingInitial());
   }
 }

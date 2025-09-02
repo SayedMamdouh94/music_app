@@ -24,10 +24,10 @@ class _ListTracksState extends State<ListTracks> {
   void initState() {
     if (widget.item.tracks.isEmpty) {
       context
-          .read<TracksBloc>()
-          .add(GetTracksEvent(type: widget.type, item: widget.item));
+          .read<TracksCubit>()
+          .getTracks(type: widget.type, item: widget.item);
     } else {
-      context.read<TracksBloc>().add(LoadedEvent());
+      context.read<TracksCubit>().setLoaded();
     }
 
     super.initState();
@@ -35,7 +35,7 @@ class _ListTracksState extends State<ListTracks> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TracksBloc, TracksState>(
+    return BlocBuilder<TracksCubit, TracksState>(
       builder: (context, state) {
         if (state is TracksLoading) {
           return ListTracksWidgets.loading();

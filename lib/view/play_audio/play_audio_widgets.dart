@@ -135,7 +135,7 @@ class PlayAudioWidgets {
                         ),
               IconButton(
                 onPressed: () =>
-                    {context.read<PlayAudioBloc>().add(ToggleRepeatEvent())},
+                    {context.read<PlayAudioCubit>().toggleRepeat()},
                 icon: Icon(
                   state.isRepeating ? Icons.repeat : Icons.repeat_one,
                   size: 50,
@@ -152,7 +152,7 @@ class PlayAudioWidgets {
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withValues(alpha: 0.2),
                   blurRadius: 8,
                   offset: const Offset(0, 15),
                 ),
@@ -190,10 +190,8 @@ class PlayAudioWidgets {
                   activeColor: state.dominantColor,
                   inactiveColor: Colors.white24,
                   onChanged: (value) {
-                    context.read<PlayAudioBloc>().add(
-                          SeekAudioEvent(
-                            position: Duration(seconds: value.toInt()),
-                          ),
+                    context.read<PlayAudioCubit>().seekAudio(
+                          Duration(seconds: value.toInt()),
                         );
                   },
                 ),
@@ -203,7 +201,7 @@ class PlayAudioWidgets {
                   children: [
                     IconButton(
                       onPressed: () =>
-                          context.read<PlayAudioBloc>().add(JumpBackEvent()),
+                          context.read<PlayAudioCubit>().jumpBack(),
                       icon: const Icon(
                         Icons.replay_10,
                         size: 40,
@@ -212,7 +210,7 @@ class PlayAudioWidgets {
                     ),
                     IconButton(
                       onPressed: () =>
-                          context.read<PlayAudioBloc>().add(PlayPauseEvent()),
+                          context.read<PlayAudioCubit>().playPause(),
                       icon: Icon(
                         state.isPlaying ? Icons.pause : Icons.play_arrow,
                         size: 40,
@@ -221,7 +219,7 @@ class PlayAudioWidgets {
                     ),
                     IconButton(
                       onPressed: () =>
-                          context.read<PlayAudioBloc>().add(JumpForwardEvent()),
+                          context.read<PlayAudioCubit>().jumpForward(),
                       icon: const Icon(
                         Icons.forward_10,
                         size: 40,

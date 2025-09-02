@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'intro_Widgets.dart';
+import 'intro_widgets.dart';
 
 class Introduction extends StatefulWidget {
   const Introduction({super.key});

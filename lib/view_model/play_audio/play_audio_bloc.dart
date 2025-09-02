@@ -1,50 +1,32 @@
 import 'dart:io';
 
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:palette_generator/palette_generator.dart';
 
-part 'play_audio_event.dart';
 part 'play_audio_state.dart';
 
-class PlayAudioBloc extends Bloc<PlayAudioEvent, PlayAudioState> {
+class PlayAudioCubit extends Cubit<PlayAudioState> {
   final AudioPlayer audioPlayer = AudioPlayer();
-  PlayAudioBloc() : super(PlayAudioInitial()) {
-    on<LoadAudioEvent>(loadAudio);
-    on<SeekAudioEvent>(seekAudio);
-    on<PlayPauseEvent>(playPause);
-    on<ToggleRepeatEvent>(toggleRepeat);
-    on<JumpForwardEvent>(jumpForward);
-    on<JumpBackEvent>(jumpBack);
-    on<ListenPositionEvent>((event, emit) {
-      if (state is LoadedAudioState) {
-        final currentState = state as LoadedAudioState;
-        if (event.position >= currentState.duration &&
-            audioPlayer.loopMode == LoopMode.off) {
-          audioPlayer.pause();
-          add(SeekAudioEvent(position: Duration.zero));
 
-          emit(
-              currentState.copyWith(position: Duration.zero, isPlaying: false));
-          return;
-        }
-        emit(currentState.copyWith(position: event.position));
-      }
-    });
-  }
-  void loadAudio(LoadAudioEvent event, Emitter<PlayAudioState> emit) async {
-    emit(LoadingPlayAudioState());
+  PlayAudioCubit() : super(const PlayAudioInitial());
+
+  Future<void> loadAudio({
+    required bool isDownloaded,
+    required String audioUrl,
+    required String imageUrl,
+  }) async {
+    emit(const LoadingPlayAudioState());
     try {
-      if (event.isDownloaded) {
-        await audioPlayer.setFilePath(event.audioUrl);
+      if (isDownloaded) {
+        await audioPlayer.setFilePath(audioUrl);
       } else {
-        await audioPlayer.setUrl(event.audioUrl);
+        await audioPlayer.setUrl(audioUrl);
       }
+
       final PaletteGenerator palette = await PaletteGenerator.fromImageProvider(
-        event.isDownloaded
-            ? FileImage(File(event.imageUrl))
-            : NetworkImage(event.imageUrl),
+        isDownloaded ? FileImage(File(imageUrl)) : NetworkImage(imageUrl),
       );
       final dominantColor = palette.darkVibrantColor?.color ?? Colors.black;
 
@@ -55,55 +37,81 @@ class PlayAudioBloc extends Bloc<PlayAudioEvent, PlayAudioState> {
         position: Duration.zero,
         duration: audioPlayer.duration ?? Duration.zero,
       ));
+
       audioPlayer.play();
       audioPlayer.setLoopMode(LoopMode.off);
-      audioPlayer.positionStream.listen((p) {
-        add(ListenPositionEvent(position: p));
+
+      // Listen to position changes
+      audioPlayer.positionStream.listen((position) {
+        updatePosition(position);
       });
     } catch (e) {
-      emit(ErrorAudioState());
+      emit(const ErrorAudioState());
     }
   }
 
-  void seekAudio(SeekAudioEvent event, Emitter<PlayAudioState> emit) {
-    final currentState = state as LoadedAudioState;
-    final Duration position = event.position;
-    final Duration duration = currentState.duration;
-    final Duration newSeconds;
-    if (position.inSeconds < 0) {
-      newSeconds = Duration.zero;
-    } else if (position.inSeconds > duration.inSeconds) {
-      newSeconds = duration;
-    } else {
-      newSeconds = position;
+  void updatePosition(Duration position) {
+    if (state is LoadedAudioState) {
+      final currentState = state as LoadedAudioState;
+      if (position >= currentState.duration &&
+          audioPlayer.loopMode == LoopMode.off) {
+        audioPlayer.pause();
+        seekAudio(Duration.zero);
+        emit(currentState.copyWith(position: Duration.zero, isPlaying: false));
+        return;
+      }
+      emit(currentState.copyWith(position: position));
     }
-    audioPlayer.seek(newSeconds);
-    emit(currentState.copyWith(position: newSeconds));
   }
 
-  void playPause(PlayPauseEvent event, Emitter<PlayAudioState> emit) {
-    final currentState = state as LoadedAudioState;
-    currentState.isPlaying ? audioPlayer.pause() : audioPlayer.play();
-    emit(currentState.copyWith(isPlaying: !currentState.isPlaying));
+  void seekAudio(Duration position) {
+    if (state is LoadedAudioState) {
+      final currentState = state as LoadedAudioState;
+      final Duration duration = currentState.duration;
+      final Duration newPosition;
+
+      if (position.inSeconds < 0) {
+        newPosition = Duration.zero;
+      } else if (position.inSeconds > duration.inSeconds) {
+        newPosition = duration;
+      } else {
+        newPosition = position;
+      }
+
+      audioPlayer.seek(newPosition);
+      emit(currentState.copyWith(position: newPosition));
+    }
   }
 
-  void toggleRepeat(ToggleRepeatEvent event, Emitter<PlayAudioState> emit) {
-    final currentState = state as LoadedAudioState;
-    final bool isRepeating = currentState.isRepeating;
-    audioPlayer.setLoopMode(isRepeating ? LoopMode.off : LoopMode.all);
-    emit(currentState.copyWith(isRepeating: !isRepeating));
+  void playPause() {
+    if (state is LoadedAudioState) {
+      final currentState = state as LoadedAudioState;
+      currentState.isPlaying ? audioPlayer.pause() : audioPlayer.play();
+      emit(currentState.copyWith(isPlaying: !currentState.isPlaying));
+    }
   }
 
-  void jumpForward(JumpForwardEvent event, Emitter<PlayAudioState> emit) {
-    final currentState = state as LoadedAudioState;
-    add(SeekAudioEvent(
-        position: currentState.position + const Duration(seconds: 10)));
+  void toggleRepeat() {
+    if (state is LoadedAudioState) {
+      final currentState = state as LoadedAudioState;
+      final bool isRepeating = currentState.isRepeating;
+      audioPlayer.setLoopMode(isRepeating ? LoopMode.off : LoopMode.all);
+      emit(currentState.copyWith(isRepeating: !isRepeating));
+    }
   }
 
-  void jumpBack(JumpBackEvent event, Emitter<PlayAudioState> emit) {
-    final currentState = state as LoadedAudioState;
-    add(SeekAudioEvent(
-        position: currentState.position - const Duration(seconds: 10)));
+  void jumpForward() {
+    if (state is LoadedAudioState) {
+      final currentState = state as LoadedAudioState;
+      seekAudio(currentState.position + const Duration(seconds: 10));
+    }
+  }
+
+  void jumpBack() {
+    if (state is LoadedAudioState) {
+      final currentState = state as LoadedAudioState;
+      seekAudio(currentState.position - const Duration(seconds: 10));
+    }
   }
 
   @override

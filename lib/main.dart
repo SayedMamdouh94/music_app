@@ -23,11 +23,11 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<ThemeBloc>(create: (context) => ThemeBloc()),
-        BlocProvider<HomeBloc>(create: (context) => HomeBloc()),
-        BlocProvider<SearchingBloc>(create: (context) => SearchingBloc()),
+        BlocProvider<ThemeCubit>(create: (context) => ThemeCubit()),
+        BlocProvider<HomeCubit>(create: (context) => HomeCubit()),
+        BlocProvider<SearchingCubit>(create: (context) => SearchingCubit()),
       ],
-      child: BlocBuilder<ThemeBloc, ThemeState>(
+      child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {
           return MaterialApp(
             title: 'music_media App',
