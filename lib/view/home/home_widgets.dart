@@ -20,6 +20,33 @@ class HomeWidgets {
     );
   }
 
+  static categoriesSection(
+    double height,
+    void Function(List<catego.Category>) allButton,
+    void Function(catego.Category) categoriesButton,
+    String selectedButton,
+    List<catego.Category> allCategories,
+    bool isLight,
+  ) {
+    return SizedBox(
+      height: height / 3.5,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          HomeWidgets.stackBackground(height),
+          HomeWidgets.stackButtons(
+            allButton,
+            allCategories,
+            categoriesButton,
+            selectedButton,
+            allCategories,
+            isLight,
+          ),
+        ],
+      ),
+    );
+  }
+
   static stackWidget(
     double height,
     void Function(List<catego.Category>) allButton,
