@@ -6,6 +6,7 @@ import 'package:music_media/data/model/category.dart' as categor;
 import 'package:music_media/data/model/playlist.dart';
 import 'package:music_media/view/home/home_widgets.dart';
 import 'package:music_media/view/home/skeleton_ui.dart';
+import 'package:music_media/view/home/carousel/carousel_section.dart';
 
 import '../../view_model/home/home_bloc.dart';
 
@@ -61,8 +62,6 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final isLight = Theme.of(context).brightness == Brightness.light;
-    final PageController pageController =
-        PageController(viewportFraction: 0.85);
 
     return Scaffold(
       appBar: HomeWidgets.appBar(isLight),
@@ -85,15 +84,21 @@ class _HomeState extends State<Home> {
               return ListView(
                 padding: const EdgeInsets.only(bottom: 20),
                 children: [
-                  HomeWidgets.stackWidget(
+                  HomeWidgets.categoriesSection(
                       height,
                       allButton,
                       categoriesButton,
                       selectedButton,
-                      currentPlaylists,
                       state.categories,
-                      pageController,
                       isLight),
+
+                  // Beautiful Carousel Section
+                  CarouselSection(
+                    playlists: currentPlaylists,
+                    height: height,
+                    title: 'Featured Playlists',
+                  ),
+
                   HomeWidgets.title('Current Artists'),
                   HomeWidgets.artistsWidget(currentArtists),
                   HomeWidgets.title('Current Albums'),
