@@ -1,6 +1,6 @@
 name: music_media
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -24,14 +24,15 @@ dependencies:
   smooth_page_indicator: ^1.2.1
   path_provider: ^2.1.5
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
   hive_generator:
-  build_runner:
-
+  build_runner: ^2.4.13
+  mockito: ^5.4.4
+  integration_test:
+    sdk: flutter
 
 flutter:
   uses-material-design: true
@@ -43,5 +44,3 @@ flutter:
     - family: Italianno-Regular
       fonts:
         - asset: assets/fonts/Italianno-Regular.ttf
-
-
