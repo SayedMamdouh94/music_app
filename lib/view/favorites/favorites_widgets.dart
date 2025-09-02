@@ -90,7 +90,9 @@ class FavoritesWidgets {
                       await File(track.imageUrl).delete();
                       tracksBox.deleteAt(index);
                       update();
-                      Navigator.of(context).pop();
+                     if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
                     },
                   ),
                 ],

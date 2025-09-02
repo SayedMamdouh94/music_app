@@ -5,7 +5,7 @@ import 'package:music_media/data/model/artist.dart';
 import 'package:music_media/data/model/category.dart' as categor;
 import 'package:music_media/data/model/playlist.dart';
 import 'package:music_media/view/home/home_widgets.dart';
-import 'package:music_media/view/home/skeletonUI.dart';
+import 'package:music_media/view/home/skeleton_ui.dart';
 
 import '../../view_model/home/home_bloc.dart';
 
@@ -24,11 +24,11 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    final state = context.read<HomeBloc>().state;
-    if (state is! HomeLoaded) {
-      context.read<HomeBloc>().add(FetchHomeEvent());
-    }
     super.initState();
+    final state = context.read<HomeCubit>().state;
+    if (state is! HomeLoaded) {
+      context.read<HomeCubit>().fetchCategories();
+    }
   }
 
   void allButton(List<categor.Category> categories) {
@@ -52,8 +52,9 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> _onRefresh() async {
-    context.read<HomeBloc>().add(FetchHomeEvent());
-    await Future.delayed(const Duration(milliseconds: 500));
+    context.read<HomeCubit>().fetchCategories();
+    // Reduced delay for better UX
+    await Future.delayed(const Duration(milliseconds: 300));
   }
 
   @override
@@ -68,7 +69,7 @@ class _HomeState extends State<Home> {
       extendBodyBehindAppBar: true,
       body: RefreshIndicator(
         onRefresh: _onRefresh,
-        child: BlocBuilder<HomeBloc, HomeState>(
+        child: BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) {
             if (state is HomeLoading) {
               return const SkeletonUI();

@@ -37,7 +37,7 @@ class _FavoritesState extends State<Favorites> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => BlocProvider(
-                          create: (_) => PlayAudioBloc(),
+                          create: (_) => PlayAudioCubit(),
                           child: PlayAudio(
                             track: Track(
                               id: 0, //trackHive haven't id

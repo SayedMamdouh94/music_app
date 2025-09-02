@@ -26,12 +26,10 @@ class _PlayAudioState extends State<PlayAudio> {
   @override
   void initState() {
     client = http.Client();
-    context.read<PlayAudioBloc>().add(
-          LoadAudioEvent(
-            isDownloaded: widget.track.isDownloaded,
-            audioUrl: widget.track.linkUrl,
-            imageUrl: widget.track.imageUrl,
-          ),
+    context.read<PlayAudioCubit>().loadAudio(
+          isDownloaded: widget.track.isDownloaded,
+          audioUrl: widget.track.linkUrl,
+          imageUrl: widget.track.imageUrl,
         );
     super.initState();
   }
@@ -115,7 +113,7 @@ class _PlayAudioState extends State<PlayAudio> {
           children: [
             PlayAudioWidgets.backGround(
                 widget.track.imageUrl, widget.track.isDownloaded),
-            BlocBuilder<PlayAudioBloc, PlayAudioState>(
+            BlocBuilder<PlayAudioCubit, PlayAudioState>(
               builder: (context, state) {
                 if (state is LoadingPlayAudioState) {
                   return PlayAudioWidgets.loading();
